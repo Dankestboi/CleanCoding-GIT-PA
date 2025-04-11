@@ -27,11 +27,11 @@ GPH *create_graph(int vertices){
 
     GPH *graph = malloc(sizeof(GPH));
     graph->vertices = vertices;
-    graph->adjacency_lists = malloc(vertices * sizeof(NODE *));
+    graph->adjacency_lists = malloc((vertices+1) * sizeof(NODE *));
 
-    graph->visited = malloc(sizeof(int) * vertices);
+    graph->visited = malloc(sizeof(int) * (vertices+1));
 
-    for (int i = 0; i < vertices; i++){
+    for (int i = 0; i <= vertices; i++){
         graph->adjacency_lists[i] =       NULL;
         graph->visited[i] = 0;
     }
@@ -50,7 +50,7 @@ void add_edge(GPH *graph, int src, int dest)
     new_NODE->next = graph->adjacency_lists[dest];
     graph->adjacency_lists[dest] = new_NODE;
 }
-int *insedg(int nr_of_vertices, int nr_of_edges, GPH *graph){
+int *insert_edge(int nr_of_vertices, int nr_of_edges, GPH *graph){
   int src, dest, i;
   printf("adauga %d muchii (de la 1 la %d)\n", nr_of_edges, nr_of_vertices);
 
@@ -70,18 +70,24 @@ int is_empty(NODE *queue)
 void enqueue(NODE **queue, int data)
 {
     NODE *new_NODE = create_NODE(data);
+    if (is_empty(*queue))
+      *queue = new_NODE;
+	else{
+    	NODE *temp = *queue;
 
-    if (is_empty(*queue)) *queue = new_NODE;
-else
-{
-    NODE *temp = *queue;
-    while (temp->next)
-    {temp = temp->next;}temp->next = new_NODE;}}
+        while (temp->next){
+          temp = temp->next;
+        }
+
+        temp->next = new_NODE;
+    }
+}
 
 int dequeue(NODE **queue){
   int data = (*queue)->data;
   NODE *temp = (*queue);
   (*queue) = (*queue)->next;
+  free(temp);
   return data;
 }
 
@@ -105,10 +111,11 @@ void print_queue(NODE *queue){
     }
 }
 
-
 void wipe_visited_list(GPH *graph, int nr_of_vertices){
-    for (int i = 0; i < nr_of_vertices; i++){
-        graph->visited[i] = 0;}}
+    for (int i = 0; i <= nr_of_vertices; i++){
+        graph->visited[i] = 0;
+    }
+}
 // parcurgeri
 void DFS(GPH *graph, int vertex_nr){
     NODE *adj_list = graph->adjacency_lists[vertex_nr];
@@ -134,7 +141,7 @@ void BFS(GPH *graph, int start){
 
     while (!is_empty(queue)){
         int current = dequeue(&queue);
-        printf("%d ", current);
+        printf("%d->", current);
 
         NODE *temp = graph->adjacency_lists[current];
 
@@ -171,7 +178,7 @@ int main()
 
     GPH *graph = create_graph(nr_of_vertices);
 
-    insedg(nr_of_vertices, nr_of_edges, graph);
+    insert_edge(nr_of_vertices, nr_of_edges, graph);
 
     printf("de unde plecam in DFS?");
     scanf("%d", &starting_vertex); // =)))

@@ -43,7 +43,7 @@ GPH *create_g(int v){
     GPH *g=malloc(sizeof(GPH));
     g->v=v;
     g->alst=malloc(sizeof(NODE *) * v);
-    g->vis=malloc(sizeof(int) *v);
+    g->vis=malloc(sizeof(int) * v);
 
     for (int i=0;i<v;i++)
     {
@@ -71,7 +71,7 @@ void DFS(GPH *g,STK *s,int v_nr){
     NODE *adj_list=g->alst[v_nr];
     NODE *aux=adj_list;
     g->vis[v_nr]=1;
-    printf("%d ",v_nr);
+    printf("%d ",v_nr+1);
     push(v_nr,s);
     while (aux != NULL){
         int con_ver=aux->data;if (g->vis[con_ver]==0)
@@ -86,7 +86,7 @@ void insert_edges(GPH *g,int edg_nr,int nrv){
     for (i=0;i<edg_nr;i++)
     {
         scanf("%d%d",&src,&dest);
-        add_edge(g,src,dest);
+        add_edge(g,src-1,dest-1);
     }
 }
 
@@ -98,7 +98,7 @@ void wipe(GPH *g, int nrv)
     }
 }
 
-void canbe(GPH *g, int nrv, STK *s1, STK *s2, int *ans)
+void can_be(GPH *g, int nrv, STK *s1, STK *s2, int *ans)
 {
     for (int i = 0; i < nrv; i++)
     {
@@ -107,6 +107,7 @@ void canbe(GPH *g, int nrv, STK *s1, STK *s2, int *ans)
             s1->t = -1;
             DFS(g, s1, i);
             wipe(g, nrv);
+            printf("\n");
 
             s2->t = -1;
             DFS(g, s2, j);
@@ -143,7 +144,7 @@ int main()
 
     insert_edges(g, edg_nr, nrv);
 
-    canbe(g, nrv, s1, s2, &ans);
+    can_be(g, nrv, s1, s2, &ans);
     printf("\n");
     if (ans)
         printf("Exista drum direct intre doua restaurante\n");
